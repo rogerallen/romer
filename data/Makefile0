@@ -2,13 +2,11 @@
 include Makefile.common
 GENERATOR=src/gen_test_scores.py
 
-GEN_TESTS := gen_one.ly gen_two.ly
+all: gen_one.ly
 
-all: $(GEN_TESTS)
-
-%.ly: $(GENERATOR)
+gen_one.ly: $(GENERATOR)
 	$(PYTHON) $(GENERATOR)
 
 .PHONY: clean
 clean:
-	rm -f $(GEN_TESTS)
+	rm -f gen_*.ly
