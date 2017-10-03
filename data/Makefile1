@@ -1,0 +1,33 @@
+# -*- mode: makefile; -*-
+PYTHON=/Users/rallen/Anaconda/bin/python
+LILYPOND=/Users/rallen/bin/lilypond
+GEN_MASK=src/gen_mask.py
+
+SRCS  := $(wildcard *.ly)
+
+SVGS  := $(SRCS:.ly=.svg)
+
+PNGS  := $(SRCS:.ly=.png)
+MIDIS := $(SRCS:.ly=.midi)
+NOTES := $(SRCS:.ly=-unnamed-staff.notes)
+
+MSVGS := $(SRCS:.ly=_mask.svg)
+MPNGS := $(SRCS:.ly=_mask.png)
+
+CWD = `pwd`
+
+all: $(SRCS) $(SVGS) $(MSVGS) $(PNGS) $(MPNGS)
+
+%.svg: %.ly
+	rm -f $(basename $<)-unnamed-staff.notes
+	lilypond -dbackend=svg $<
+
+%.png: %.svg
+	inkscape --export-png=$(CWD)/$@ --export-dpi=96 $(CWD)/$<
+
+%_mask.svg: %.svg
+	$(PYTHON) $(GEN_MASK) $< > $@
+
+.PHONY: clean
+clean:
+	rm -f $(SVGS) $(PNGS) $(MIDIS) $(NOTES) $(MSVGS) $(MPNGS)
