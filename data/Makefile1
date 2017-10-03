@@ -1,6 +1,6 @@
 # -*- mode: makefile; -*-
-PYTHON=/Users/rallen/Anaconda/bin/python
-LILYPOND=/Users/rallen/bin/lilypond
+include Makefile.common
+
 GEN_MASK=src/gen_mask.py
 
 SRCS  := $(wildcard *.ly)

@@ -1,5 +1,5 @@
 # -*- mode: makefile; -*-
-PYTHON=/Users/rallen/Anaconda/bin/python
+include Makefile.common
 GENERATOR=src/gen_test_scores.py
 
 GEN_TESTS := gen_one.ly gen_two.ly
