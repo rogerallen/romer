@@ -1,0 +1,5 @@
+data/*.midi
+data/*.png
+data/*.svg
+data/*.notes
+__pycache__
