@@ -113,104 +113,104 @@ def clean_files():
 
 # ======================================================================
 class Application(object):
-  def __init__(self,argv):
-    self.config = Config()
-    self.parse_args(argv)
-    self.adjust_logging_level()
+    def __init__(self,argv):
+        self.config = Config()
+        self.parse_args(argv)
+        self.adjust_logging_level()
 
-  def run(self):
-    """The Application main run routine
-    """
-    # -v to see info messages
-    logging.info("Args: {}".format(self.args))
-    if self.args.clean:
-        clean_files()
+    def run(self):
+        """The Application main run routine
+        """
+        # -v to see info messages
+        logging.info("Args: {}".format(self.args))
+        if self.args.clean:
+            clean_files()
+            return 0
+        generate_test_lilypond_files()
+        run_lilypond(self.args)
+        create_mask_svgs()
+        run_inkscape(self.args)
         return 0
-    generate_test_lilypond_files()
-    run_lilypond(self.args)
-    create_mask_svgs()
-    run_inkscape(self.args)
-    return 0
 
-  def parse_args(self,argv):
-    """parse commandline arguments, use config files to override
-    default values. Initializes:
-    self.args: a dictionary of your commandline options,
-    """
-    parser = argparse.ArgumentParser(description="A python3 skeleton.")
-    parser.add_argument(
-      "-v","--verbose",
-      dest="verbose",
-      action='count',
-      default=self.config.get("options","verbose",0),
-      help="Increase verbosity (add once for INFO, twice for DEBUG)"
-      )
-    parser.add_argument(
-        "--clean",
-        action='store_true',
-        help="Clean all files created by this script."
-    )
-    parser.add_argument(
-        "--lilypond_path",
-        dest="lilypond_path",
-        default=self.config.get("lilypond","path",""),
-        help="specify path to lilypond executable"
-    )
-    parser.add_argument(
-        "--inkscape_path",
-        dest="inkscape_path",
-        default=self.config.get("inkscape","path",""),
-        help="specify path to inkscape executable"
-    )
-    self.args = parser.parse_args(argv)
+    def parse_args(self,argv):
+        """parse commandline arguments, use config files to override
+        default values. Initializes:
+        self.args: a dictionary of your commandline options,
+        """
+        parser = argparse.ArgumentParser(description="A python3 skeleton.")
+        parser.add_argument(
+            "-v","--verbose",
+            dest="verbose",
+            action='count',
+            default=self.config.get("options","verbose",0),
+            help="Increase verbosity (add once for INFO, twice for DEBUG)"
+        )
+        parser.add_argument(
+            "--clean",
+            action='store_true',
+            help="Clean all files created by this script."
+        )
+        parser.add_argument(
+            "--lilypond_path",
+            dest="lilypond_path",
+            default=self.config.get("lilypond","path",""),
+            help="specify path to lilypond executable"
+        )
+        parser.add_argument(
+            "--inkscape_path",
+            dest="inkscape_path",
+            default=self.config.get("inkscape","path",""),
+            help="specify path to inkscape executable"
+        )
+        self.args = parser.parse_args(argv)
 
-  def adjust_logging_level(self):
-    """adjust logging level based on verbosity option
-    """
-    log_level = logging.WARNING # default
-    if self.args.verbose == 1:
-      log_level = logging.INFO
-    elif self.args.verbose >= 2:
-      log_level = logging.DEBUG
-    logging.basicConfig(level=log_level)
+    def adjust_logging_level(self):
+        """adjust logging level based on verbosity option
+        """
+        log_level = logging.WARNING # default
+        if self.args.verbose == 1:
+            log_level = logging.INFO
+        elif self.args.verbose >= 2:
+            log_level = logging.DEBUG
+        logging.basicConfig(level=log_level)
 
 # ======================================================================
 class Config(object):
-  """Config Class.  Use a configuration file to control your program
-  when you have too much state to pass on the command line.
-  Reads the <program_name>.cfg or ~/.<program_name>.cfg file for
-  configuration options.
-  Handles booleans, integers and strings inside your cfg file.
-  """
-  def __init__(self,program_name=None):
-      self.config_parser = configparser.ConfigParser()
-      if not program_name:
-        program_name = os.path.basename(sys.argv[0].replace('.py',''))
-      self.config_parser.read([program_name+'.cfg',
-                        os.path.expanduser('~/.'+program_name+'.cfg')])
-  def get(self,section,name,default):
-      """returns the value from the config file, tries to find the
-      'name' in the proper 'section', and coerces it into the default
-      type, but if not found, return the passed 'default' value.
-      """
-      try:
-          if type(default) == type(bool()):
-              return self.config_parser.getboolean(section,name)
-          elif type(default) == type(int()):
-              return self.config_parser.getint(section,name)
-          else:
-              return self.config_parser.get(section,name)
-      except:
-          return default
+    """Config Class.  Use a configuration file to control your program
+    when you have too much state to pass on the command line.
+    Reads the <program_name>.cfg or ~/.<program_name>.cfg file for
+    configuration options.
+    Handles booleans, integers and strings inside your cfg file.
+    """
+    def __init__(self,program_name=None):
+        self.config_parser = configparser.ConfigParser()
+        if not program_name:
+            program_name = os.path.basename(sys.argv[0].replace('.py',''))
+        self.config_parser.read([program_name+'.cfg',
+                                 os.path.expanduser('~/.'+program_name+'.cfg')])
+    def get(self,section,name,default):
+        """returns the value from the config file, tries to find the
+        'name' in the proper 'section', and coerces it into the default
+        type, but if not found, return the passed 'default' value.
+        """
+        try:
+            if type(default) == type(bool()):
+                return self.config_parser.getboolean(section,name)
+            elif type(default) == type(int()):
+                return self.config_parser.getint(section,name)
+            else:
+                return self.config_parser.get(section,name)
+        except:
+            return default
 
 # ======================================================================
 def main(argv):
-  """ The main routine creates and runs the Application.
-  argv: list of commandline arguments without the program name
-  returns application run status
-  """
-  app = Application(argv)
-  return app.run()
+    """ The main routine creates and runs the Application.
+    argv: list of commandline arguments without the program name
+    returns application run status
+    """
+    app = Application(argv)
+    return app.run()
 
 if __name__ == "__main__":
-  sys.exit(main(sys.argv[1:]))
+    sys.exit(main(sys.argv[1:]))
