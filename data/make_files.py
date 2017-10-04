@@ -112,40 +112,25 @@ def clean_files():
             pass
 
 # ======================================================================
-class Config(object):
-  """Config Class.  Use a configuration file to control your program
-  when you have too much state to pass on the command line.
-  Reads the <program_name>.cfg or ~/.<program_name>.cfg file for
-  configuration options.
-  Handles booleans, integers and strings inside your cfg file.
-  """
-  def __init__(self,program_name=None):
-      self.config_parser = configparser.ConfigParser()
-      if not program_name:
-        program_name = os.path.basename(sys.argv[0].replace('.py',''))
-      self.config_parser.read([program_name+'.cfg',
-                        os.path.expanduser('~/.'+program_name+'.cfg')])
-  def get(self,section,name,default):
-      """returns the value from the config file, tries to find the
-      'name' in the proper 'section', and coerces it into the default
-      type, but if not found, return the passed 'default' value.
-      """
-      try:
-          if type(default) == type(bool()):
-              return self.config_parser.getboolean(section,name)
-          elif type(default) == type(int()):
-              return self.config_parser.getint(section,name)
-          else:
-              return self.config_parser.get(section,name)
-      except:
-          return default
-
-# ======================================================================
 class Application(object):
   def __init__(self,argv):
     self.config = Config()
     self.parse_args(argv)
     self.adjust_logging_level()
+
+  def run(self):
+    """The Application main run routine
+    """
+    # -v to see info messages
+    logging.info("Args: {}".format(self.args))
+    if self.args.clean:
+        clean_files()
+        return 0
+    generate_test_lilypond_files()
+    run_lilypond(self.args)
+    create_mask_svgs()
+    run_inkscape(self.args)
+    return 0
 
   def parse_args(self,argv):
     """parse commandline arguments, use config files to override
@@ -189,19 +174,34 @@ class Application(object):
       log_level = logging.DEBUG
     logging.basicConfig(level=log_level)
 
-  def run(self):
-    """The Application main run routine
-    """
-    # -v to see info messages
-    logging.info("Args: {}".format(self.args))
-    if self.args.clean:
-        clean_files()
-        return 0
-    generate_test_lilypond_files()
-    run_lilypond(self.args)
-    create_mask_svgs()
-    run_inkscape(self.args)
-    return 0
+# ======================================================================
+class Config(object):
+  """Config Class.  Use a configuration file to control your program
+  when you have too much state to pass on the command line.
+  Reads the <program_name>.cfg or ~/.<program_name>.cfg file for
+  configuration options.
+  Handles booleans, integers and strings inside your cfg file.
+  """
+  def __init__(self,program_name=None):
+      self.config_parser = configparser.ConfigParser()
+      if not program_name:
+        program_name = os.path.basename(sys.argv[0].replace('.py',''))
+      self.config_parser.read([program_name+'.cfg',
+                        os.path.expanduser('~/.'+program_name+'.cfg')])
+  def get(self,section,name,default):
+      """returns the value from the config file, tries to find the
+      'name' in the proper 'section', and coerces it into the default
+      type, but if not found, return the passed 'default' value.
+      """
+      try:
+          if type(default) == type(bool()):
+              return self.config_parser.getboolean(section,name)
+          elif type(default) == type(int()):
+              return self.config_parser.getint(section,name)
+          else:
+              return self.config_parser.get(section,name)
+      except:
+          return default
 
 # ======================================================================
 def main(argv):
