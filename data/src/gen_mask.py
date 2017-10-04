@@ -81,7 +81,7 @@ def prettify_svg(elem):
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
 
-def print_svg(bbs):
+def print_svg(bbs,output_file_name):
     svg = ET.Element('svg')
     # FIXME - get from original SVG
     svg.set("xmlns","http://www.w3.org/2000/svg")
@@ -92,16 +92,18 @@ def print_svg(bbs):
     svg.set("viewBox", "0 0 119.5016 169.0094")
     for bb in bbs:
         bb.add_svg_rect(svg)
-    print(prettify_svg(svg))
+    with open(output_file_name,'w') as of:
+        print("generating",output_file_name)
+        print(prettify_svg(svg),file=of)
 
-def gen_mask(root):
+def gen_mask(root,output_file_name):
     bboxes = find_bbox_borders(root)
-    print_svg(bboxes)
+    print_svg(bboxes,output_file_name)
 
-def main(input_file_name):
+def main(input_file_name,output_file_name):
     tree = ET.parse(input_file_name)
     root = tree.getroot()
-    gen_mask(root)
+    gen_mask(root,output_file_name)
 
 if __name__ == "__main__":
     main(sys.argv[1])
