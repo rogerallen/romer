@@ -15,6 +15,11 @@ import src.gen_test_scores as gts
 import src.gen_mask as gm
 import src.gen_rmfxy as grmf
 
+if os.name == 'nt':
+    MIDI_SUFFIX = '.mid'
+else:
+    MIDI_SUFFIX = '.midi'
+
 def getmtime(path):
     try:
         return os.path.getmtime(path)
@@ -50,7 +55,7 @@ def run_lilypond(args):
     for src in sources:
         src_mtime = getmtime(src)
         dests = [src.replace('.ly','.svg'),
-                 src.replace('.ly','.midi'),
+                 src.replace('.ly',MIDI_SUFFIX),
                  src.replace('.ly','-unnamed-staff.notes')]
         dest_mtime = min([getmtime(p) for p in dests])
         if src_mtime > dest_mtime:
@@ -112,7 +117,7 @@ def clean_files():
     dests = glob.glob('gen*.ly')
     for src in sources:
         dests += [
-            src.replace('.ly','.midi'),
+            src.replace('.ly',MIDI_SUFFIX),
             src.replace('.ly','.png'),
             src.replace('.ly','.svg'),
             src.replace('.ly','_mask.png'),

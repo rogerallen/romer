@@ -36,7 +36,7 @@ def parse_lypoints(svg_file_name):
     for a in root.findall('{http://www.w3.org/2000/svg}a'):
         fields = a.attrib['{http://www.w3.org/1999/xlink}href'].split(':')
         if fields[0] == 'textedit':
-            row,col = int(fields[2]),int(fields[3])
+            row,col = int(fields[-3]),int(fields[-2])
             p = a.find('{http://www.w3.org/2000/svg}path')
             x,y = xy_from_transform(p.attrib['transform'])
             points[(row,col)] = (x,y)
