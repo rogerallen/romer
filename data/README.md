@@ -16,8 +16,8 @@ Create the rest of the output via the make_files.py script.  It will run all the
 
 ## To Do
 
-- [ ] try windows (this was coded on the mac first)
-- [ ] try linux
+- [x] ~~try windows (this was coded on the mac first)~~
+- [x] ~~try linux~~
 - [ ] generate music in all key signatures
 - [ ] generate music in all time signatures
 - [ ] generate music in all clefs
