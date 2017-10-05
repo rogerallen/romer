@@ -8,7 +8,7 @@ Yes, this is just getting started.  If you are interested in helping out, contac
 
 ## License
 
-This project is licensed under the GPL V3 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPL V3 License - see https://www.gnu.org/licenses/gpl-3.0.en.html for details
 
 ## Acknowledgments
 
