@@ -1,4 +1,5 @@
 data/gen_*.ly
+data/make_files.cfg
 data/*.midi
 data/*.png
 data/*.rmf
