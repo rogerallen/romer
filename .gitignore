@@ -1,5 +1,8 @@
+data/gen_*.ly
 data/*.midi
 data/*.png
+data/*.rmf
+data/*.rmfxy
 data/*.svg
 data/*.notes
 __pycache__

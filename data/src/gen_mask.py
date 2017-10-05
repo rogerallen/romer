@@ -106,4 +106,4 @@ def main(input_file_name,output_file_name):
     gen_mask(root,output_file_name)
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1],sys.argv[2])

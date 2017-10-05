@@ -13,6 +13,7 @@ import sys
 
 import src.gen_test_scores as gts
 import src.gen_mask as gm
+import src.gen_rmfxy as grmf
 
 def getmtime(path):
     try:
@@ -92,6 +93,20 @@ def run_inkscape(args):
         else:
             logging.info('run_inkscape: nothing to generate for %s'%(src))
 
+def generate_rmfxy_files():
+    sources = glob.glob('*-unnamed-staff.notes')
+    for src in sources:
+        src1 = src.replace('-unnamed-staff.notes','.svg')
+        src_mtime = max([getmtime(src),getmtime(src1)])
+        dest = src.replace('-unnamed-staff.notes','.rmf')
+        dest1 = src.replace('-unnamed-staff.notes','.rmfxy')
+        dest_mtime = min([getmtime(dest),getmtime(dest1)])
+        if src_mtime > dest_mtime:
+            grmf.main(src,src1,dest.replace('.rmf',''))
+        else:
+            logging.info('run_lilypond: nothing to generate for %s'%(src))
+
+
 def clean_files():
     sources = glob.glob('*.ly')
     dests = glob.glob('gen*.ly')
@@ -102,7 +117,9 @@ def clean_files():
             src.replace('.ly','.svg'),
             src.replace('.ly','_mask.png'),
             src.replace('.ly','_mask.svg'),
-            src.replace('.ly','-unnamed-staff.notes')
+            src.replace('.ly','-unnamed-staff.notes'),
+            src.replace('.ly','.rmf'),
+            src.replace('.ly','.rmfxy')
         ]
     logging.info("clean_files: %s"%(dests))
     for d in dests:
@@ -130,6 +147,7 @@ class Application(object):
         run_lilypond(self.args)
         create_mask_svgs()
         run_inkscape(self.args)
+        generate_rmfxy_files()
         return 0
 
     def parse_args(self,argv):
