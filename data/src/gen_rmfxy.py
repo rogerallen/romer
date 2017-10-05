@@ -29,17 +29,31 @@ def xy_from_transform(ts):
     y = float(ll[0])
     return x,y
 
+def calc_png_scale():
+    # this turns out to scale x & y by the same value, so just return
+    # one of them.  Below, I just showing how it was calculated using
+    # default SVG lilypond values and the dpi we currently use for
+    # inkscape.  dpi will probably be a parameter, eventually.
+    svg_pix     = 119.5016, 169.0094
+    svg_mm      = 210.00,   297.00
+    inch_per_mm = 1/25.4
+    svg_dpi     = svg_pix[0]/svg_mm[0]/inch_per_mm, svg_pix[1]/svg_mm[1]/inch_per_mm
+    png_dpi     = 96
+    scale       = png_dpi/svg_dpi[0], png_dpi/svg_dpi[1]
+    return scale[0]
+
 def parse_lypoints(svg_file_name):
     tree = ET.parse(svg_file_name)
     root = tree.getroot()
     points = {}
+    xy_scale = calc_png_scale()
     for a in root.findall('{http://www.w3.org/2000/svg}a'):
         fields = a.attrib['{http://www.w3.org/1999/xlink}href'].split(':')
         if fields[0] == 'textedit':
             row,col = int(fields[-3]),int(fields[-2])
             p = a.find('{http://www.w3.org/2000/svg}path')
             x,y = xy_from_transform(p.attrib['transform'])
-            points[(row,col)] = (x,y)
+            points[(row,col)] = (xy_scale*x,xy_scale*y)
     return points
 
 def parse_line(line):

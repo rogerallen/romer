@@ -18,6 +18,8 @@ Create the rest of the output via the make_files.py script.  It will run all the
 
 - [x] ~~try windows (this was coded on the mac first)~~
 - [x] ~~try linux~~
+- [x] ~~align x,y between rmfxy & png~~
+- [ ] first attempt: train & learn with this data
 - [ ] generate music in all key signatures
 - [ ] generate music in all time signatures
 - [ ] generate music in all clefs
@@ -27,7 +29,7 @@ Create the rest of the output via the make_files.py script.  It will run all the
   - [ ] https://veltzer.github.io/openbook/, https://github.com/veltzer/openbook
   - [ ] http://www.mutopiaproject.org/, https://github.com/MutopiaProject/MutopiaProject
   - [ ] find others
-- [ ] train & learn with this data
+- [ ] fully train & learn with this data
 
 ## Details
 
