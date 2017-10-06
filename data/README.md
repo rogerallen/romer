@@ -73,7 +73,7 @@ Finally, gen_rmfxy outputs both of these files:
 - *twinkle.rmfxy*: notes along with their x,y locations in the score svg
 - twinkle.rmf: just the notes
 
-With these files generated we have the two main files to use for training.  The image, of course is *twinkle.png*.  The notes file has the following format, one note per line.
+With these files generated we have the two main files to use for training.  The image, of course is *twinkle.png*.  The music and notes description file *twinkle.rmfxy* has the following format, one note per line.
 
 ```
 note,<midi pitch>,<start beat>,<duration in beats>,<note image x>,<note image y>
