@@ -19,11 +19,13 @@ Create the rest of the output via the make_files.py script.  It will run all the
 - [x] ~~try windows (this was coded on the mac first)~~
 - [x] ~~try linux~~
 - [x] ~~align x,y between rmfxy & png~~
+- [ ] output greyscale png.  no need for color
 - [ ] first attempt: train & learn with this data
 - [ ] generate music in all key signatures
 - [ ] generate music in all time signatures
 - [ ] generate music in all clefs
 - [ ] generate multi-part scores
+- [ ] generate pngs at different sizes (vary inkscape DPI)
 - [ ] what about repeats?
 - [ ] get free scores
   - [ ] https://veltzer.github.io/openbook/, https://github.com/veltzer/openbook
@@ -55,7 +57,7 @@ Here is an example of "Twinkle, Twinkle, Little Star" and what each file contain
 
 - twinkle.ly: this is the starting point score file describing the song for Lilypond.
 
-When Lilypond runs, it outputs three file:
+When Lilypond runs, it outputs three files:
 - twinkle.svg: a description of the sheet music
 - twinkle.midi: a file that can be used directly to synthesize music.
 - twinkle-unnamed-staff.notes: a text file with details about each note in the score.
@@ -64,9 +66,19 @@ Now gen_mask.py can run and find the staff lines to create a mask file:
 - twinkle_mask.svg
 
 Inkscape can use both svg files to create images.
-- twinkle.png: the actual score sheet music image
+- *twinkle.png*: the actual score sheet music image
 - twinkle_mask.png: a mask to highlight where the staff lines are.
 
 Finally, gen_rmfxy outputs both of these files:
-- twinkle.rmfxy: notes along with their x,y locations in the score svg
+- *twinkle.rmfxy*: notes along with their x,y locations in the score svg
 - twinkle.rmf: just the notes
+
+With these files generated we have the two main files to use for training.  The image, of course is *twinkle.png*.  The music and notes description file *twinkle.rmfxy* has the following format, one note per line.
+
+```
+note,<midi pitch>,<start beat>,<duration in beats>,<note image x>,<note image y>
+```
+
+You can see this illustrated with a few notes from the beginning of "Twinkle, Twinkle Little Star"
+
+![Image of Twinkle notes and score](https://github.com/rogerallen/romer/raw/master/doc/twinkle_note_png.jpg)
