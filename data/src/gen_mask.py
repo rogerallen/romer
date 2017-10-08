@@ -40,7 +40,7 @@ class BBox:
         child.set('y',str(self.y))
         child.set('width',str(self.w))
         child.set('height',str(self.h))
-        child.set('fill','pink')
+        child.set('fill','magenta')
         # modifies parent tree
 
 def xy_from_transform(s):
