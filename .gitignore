@@ -8,3 +8,4 @@ data/*.rmfxy
 data/*.svg
 data/*.notes
 __pycache__
+.ipynb_checkpoints/
