@@ -12,7 +12,7 @@ import numpy as np
 import math
 import sys
 
-from tiramisu import create_tiramisu
+from tiramisu import Tiramisu
 
 def timestamp():
     return datetime.now().strftime('%y%m%d_%H%M%S')
@@ -73,21 +73,26 @@ def main():
     valid_generator = image_generator(valid_score_images, valid_mask_images,
                                       batch_size, channels)
     print("create model")
-    image_input = Input(shape=input_shape)
-    x = create_tiramisu(num_labels, image_input,
-                        nb_layers_per_block=[4,5,7,10,12,15],
-                        p=0.2, wd=1e-4)
-    model = Model(image_input, x)
+    # changed to much simpler model thinking that for black & white that woudl be fine
+    # seems to be right.
+    model = Tiramisu(num_labels, 
+                     input_shape,
+                     nb_layers_per_block=[2,3,4,5,6],#[4,5,7,10,12],
+                     initial_filter=24,#48
+                     bottleneck_layers=8,#16
+                     growth_rate=8,
+                     do_td_maxpool=False)
+    print(model.summary())
     print("compile model")
     model.compile(loss='sparse_categorical_crossentropy',
                   optimizer=RMSprop(train_rate),
                   metrics=["accuracy"])
 
     # optionally save model
-    if False:
+    if True:
         print("saving model")
         json_string = model.to_json()
-        with open("data/results/model_171015.json","w") as f:
+        with open("data/results/model_171108.json","w") as f:
             f.write(json_string)
         sys.exit(0)
 
@@ -118,7 +123,7 @@ def main():
                         callbacks=[tbcb,lrcb])
     print(f"batch size = {batch_size}")
     print("step lr changes 1e-3, 0.5, 5")
-    print(f"save model {ts}")
+    print(f"save weights {ts}")
     model.save_weights(f'data/results/mask_weights_{ts}.h5')
 
 if __name__ == "__main__":
