@@ -12,8 +12,11 @@ TBD
 
 ## To Do
 
-- [ ] come up with a model
-- [ ] train model
+- [X] come up with a model for masking regions of interest
+- [X] train model for masking regions of interest
+- [ ] come up with a CNN model for scanning staff lines
+- [ ] come up with a RNN model for scanning staff lines
+
 
 ## Architecture
 
@@ -24,6 +27,7 @@ Input is:
 
 Output is a sequence of notes.  For now a text file output.
 - time to play this note
+  - perhaps time-since-last-note is easier for network
 - note pitch
 - note duration
 - caveat: a common occurrence is to play multiple notes at the same time.
@@ -42,6 +46,7 @@ Data Pipeline:
     - was previous staff connected? (e.g. piano grand staff)
   - not stateful
     - note name & duration when centered in the image
+    - number of notes
     - information about where notes are in the image to help scanning operation
       notes-to-the-right, notes-to-the-left, notes-at-center
 

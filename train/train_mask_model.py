@@ -14,6 +14,9 @@ import sys
 
 from tiramisu import Tiramisu
 
+def daystamp():
+    return datetime.now().strftime('%y%m%d')
+
 def timestamp():
     return datetime.now().strftime('%y%m%d_%H%M%S')
 
@@ -47,14 +50,15 @@ def get_score_mask_images(path):
 def step_decay(epoch):
     initial_lrate = 1e-3
     drop = 0.75
-    epochs_drop = 5.0
+    epochs_drop = 10.0
     lrate = (initial_lrate *
              math.pow(drop, math.floor((1+epoch)/epochs_drop)))
-    print("step_decay: %f"%(lrate))
+    print("step_decay: epoch=%d lrate=%f"%(epoch, lrate))
     return lrate
 
 def main():
     ts = timestamp()
+    ds = daystamp()
     print("run: %s"%(ts))
     tsdir = './logs/'+ts
     makedirs(tsdir)
@@ -64,7 +68,7 @@ def main():
     num_train_images,rows,cols,channels = train_score_images.shape
     num_valid_images,_,_,_ = valid_score_images.shape
     input_shape = (rows,cols,channels)
-    batch_size  = 32 # tried 64+ and all failed
+    batch_size  = 32 # got less accurate with 128
     num_epochs  = 100
     train_rate  = 1e-3
     num_labels  = 2
@@ -75,26 +79,28 @@ def main():
     print("create model")
     # changed to much simpler model thinking that for black & white that woudl be fine
     # seems to be right.
-    model = Tiramisu(num_labels, 
+    model = Tiramisu(num_labels,
                      input_shape,
                      nb_layers_per_block=[2,3,4,5,6],#[4,5,7,10,12],
                      initial_filter=24,#48
                      bottleneck_layers=8,#16
                      growth_rate=8,
                      do_td_maxpool=False)
-    print(model.summary())
+    print(f"saving model summary data/results/model_{ds}_summary.txt")
+    with open(f'data/results/model_{ds}_summary.txt','w') as f:
+        model.summary(print_fn=lambda x: f.write(x + '\n'))
     print("compile model")
     model.compile(loss='sparse_categorical_crossentropy',
                   optimizer=RMSprop(train_rate),
                   metrics=["accuracy"])
 
     # optionally save model
-    if True:
-        print("saving model")
+    if True:#False:
+        print(f"saving model data/results/model_{ds}.json")
         json_string = model.to_json()
-        with open("data/results/model_171108.json","w") as f:
+        with open(f"data/results/model_{ds}.json","w") as f:
             f.write(json_string)
-        sys.exit(0)
+        #sys.exit(0)
 
     print("fit model")
     tbcb = TensorBoard(log_dir=tsdir,
@@ -122,8 +128,7 @@ def main():
                         validation_steps=num_valid_images//batch_size,
                         callbacks=[tbcb,lrcb])
     print(f"batch size = {batch_size}")
-    print("step lr changes 1e-3, 0.5, 5")
-    print(f"save weights {ts}")
+    print(f"save weights data/results/mask_weights_{ts}.h5")
     model.save_weights(f'data/results/mask_weights_{ts}.h5')
 
 if __name__ == "__main__":
