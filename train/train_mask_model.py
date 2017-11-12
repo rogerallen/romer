@@ -68,7 +68,7 @@ def main():
     num_train_images,rows,cols,channels = train_score_images.shape
     num_valid_images,_,_,_ = valid_score_images.shape
     input_shape = (rows,cols,channels)
-    batch_size  = 32 # got less accurate with 128
+    batch_size  = 32 # got less accurate with 64, 128
     num_epochs  = 100
     train_rate  = 1e-3
     num_labels  = 2
@@ -77,8 +77,9 @@ def main():
     valid_generator = image_generator(valid_score_images, valid_mask_images,
                                       batch_size, channels)
     print("create model")
-    # changed to much simpler model thinking that for black & white that woudl be fine
-    # seems to be right.
+    # changed to much simpler model thinking that for black & white
+    # that would be fine seems to be right.  Also, tried turning on
+    # maxpool and was very disappointed by results.
     model = Tiramisu(num_labels,
                      input_shape,
                      nb_layers_per_block=[2,3,4,5,6],#[4,5,7,10,12],

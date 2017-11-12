@@ -7,32 +7,15 @@ Michal Drozdzal, David Vazquez, Adriana Romero, Yoshua
 Bengio. https://arxiv.org/abs/1611.09326
 
 Originally based on the code from the 2nd Fast.ai Deep Learning course
-here:
+at
 https://github.com/fastai/courses/blob/master/deeplearning2/tiramisu-keras.ipynb
+which is Apache licensed. See
+https://github.com/fastai/courses/blob/master/LICENSE.txt
 
-Updated to Keras 2 and rewritten based on my own sensibilities.
-
-MIT License
+I updated the code to Keras 2 and rewrote it based on my own tastes.
+Since IANAL, let's keep the Apache license for this code, too.
 
 Copyright (c) 2017 Roger Allen
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 '''
 
@@ -42,11 +25,11 @@ from keras.layers import Conv2D
 from keras.layers import Conv2DTranspose
 from keras.layers import Dropout
 from keras.layers import Input
+from keras.layers import MaxPooling2D
 from keras.layers import Reshape
 from keras.layers import concatenate
 from keras.models import Model
 from keras.regularizers import l2
-import keras.backend as K
 
 def __dense_block_down(x, nb_layers, growth_rate, p, wd, name):
     """Described in Figure 1 & 2 from the paper.  A dense_block has
@@ -147,31 +130,35 @@ def Tiramisu(nb_classes,
              do_td_maxpool=True,
              p=0.2,
              wd=1e-4):
-    """Instantiate the tiramisu architecture.
+    """Instantiate the tiramisu architecture.  See Figures 1, 2 and Table
+    1 for diagrams showing what each of these settings are.
 
     inputs:
-      nb_classes: number of output classes to classify
+      nb_classes: number of output classes to classify.
 
-      input_shape: tuple of shape (channels, rows, columns) or (rows,
-          columns, channels) that should match your
-          K.image_data_format() == 'channels_first' setting.
+      input_shape: tuple of shape (channels, rows, columns) if
+          K.image_data_format() == 'channels_first', else (rows,
+          columns, channels).
 
-      nb_layers_per_block: items in list are number of layers in each
-          dense block (not including bottleneck) e.g. [4,5,7,10,12] to
-          match the paper.  Note that the last entry in the list
-          doesn't produce skips and the up path won't mirror it.
+      nb_layers_per_block: list describing down and up pathway. Items
+          in list are number of layers in each dense block (not
+          including bottleneck) on the way down and the reverse of
+          this on the way back up.  Set to [4,5,7,10,12] to match the
+          paper.
 
       initial_filter: number of filters in initial 3x3 Conv
           (48 per paper)
 
-      bottleneck_layers: number of layers in bottleneck stage
-          (15 per paper)
+      bottleneck_layers: number of layers in bottleneck stage between
+          the down and up paths.  (15 per paper)
 
       growth_rate: number of filters to add per dense block
           (12 or 16 per paper)
 
       do_td_maxpool: Jeremy Howard's implemntation allowed for
-          removing the TD block's maxpooling layer.
+          removing the TD block's maxpooling layer.  Default set to
+          'True' to match the paper, but my experience matches his in
+          that setting this 'False' results in better results.
 
       p: dropout rate or None for no Dropout() (0.2 per paper)
 
