@@ -15,6 +15,10 @@ validation & test set of images to train the masking model.
 
 3. test the model with the 'check_mask_model.ipynb' notebook.
 
+4. run 'score_data_prep.ipynb' to setup data/train2 with the selected score staff lines.
+
+...and that's as far as I am.  Need to parse those staff lines.
+
 ## To Do
 
 - [X] come up with a model for masking regions of interest

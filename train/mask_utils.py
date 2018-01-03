@@ -2,8 +2,8 @@ import numpy as np
 from PIL import Image
 
 def get_image_names(base_name):
-    score_file_name = f'../data/{base_name}.png'
-    mask_file_name = f'../data/{base_name}_mask.png'
+    score_file_name = f'../setup/{base_name}.png'
+    mask_file_name = f'../setup/{base_name}_mask.png'
     return score_file_name, mask_file_name
 
 def get_images(base_name):
@@ -19,7 +19,7 @@ def get_images(base_name):
 def get_input_prediction_tiles(input_image):
     # cannot just send an image to predict.  We have to send the tiles
     # pred_result = model.predict(score_image)
-    #   ValueError: Error when checking : expected input_1 to have shape (None, 64, 64, 1) 
+    #   ValueError: Error when checking : expected input_1 to have shape (None, 64, 64, 1)
     #   but got array with shape (1, 1123, 794, 1)
     num_tiles = np.ceil(np.array([input_image.width/64,input_image.height/64]))
     tot_tiles = int(num_tiles[0]*num_tiles[1])
