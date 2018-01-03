@@ -8,7 +8,12 @@ The goal of the code in this area is to use the files created in the ../data dir
 
 ## Usage
 
-TBD
+1. step through the 'mask_data_prep.ipynb' to create the training,
+validation & test set of images to train the masking model.
+
+2. run train_mask_model.py to create the model & model weights.
+
+3. test the model with the 'check_mask_model.ipynb' notebook.
 
 ## To Do
 
