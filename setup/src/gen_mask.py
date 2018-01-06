@@ -81,15 +81,14 @@ def prettify_svg(elem):
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
 
-def print_svg(bbs,output_file_name):
+def print_mask_svg(bbs,output_file_name,attrib):
     svg = ET.Element('svg')
-    # FIXME - get from original SVG
-    svg.set("xmlns","http://www.w3.org/2000/svg")
+    svg.set("xmlns",       "http://www.w3.org/2000/svg")
     svg.set("xmlns:xlink", "http://www.w3.org/1999/xlink")
-    svg.set("version", "1.2")
-    svg.set("width", "210.00mm")
-    svg.set("height", "297.00mm")
-    svg.set("viewBox", "0 0 119.5016 169.0094")
+    svg.set("version",     attrib['version'])
+    svg.set("width",       attrib['width'])
+    svg.set("height",      attrib['height'])
+    svg.set("viewBox",     attrib['viewBox'])
     for bb in bbs:
         bb.add_svg_rect(svg)
     with open(output_file_name,'w') as of:
@@ -98,7 +97,7 @@ def print_svg(bbs,output_file_name):
 
 def gen_mask(root,output_file_name):
     bboxes = find_bbox_borders(root)
-    print_svg(bboxes,output_file_name)
+    print_mask_svg(bboxes,output_file_name,root.attrib)
 
 def main(input_file_name,output_file_name):
     tree = ET.parse(input_file_name)
