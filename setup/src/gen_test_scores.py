@@ -2,6 +2,9 @@
 from random import choice, seed, shuffle
 
 ly_template_start = """\\include "event-listener.ly"
+\\paper {
+  #(set-paper-size "letter")
+}
 \\score {
   {
     \\clef treble

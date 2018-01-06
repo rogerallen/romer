@@ -1,4 +1,7 @@
 \include "event-listener.ly"
+\paper {
+  #(set-paper-size "letter")
+}
 \score {
   {
     \clef treble

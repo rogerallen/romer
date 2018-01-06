@@ -76,14 +76,26 @@ def create_mask_svgs():
         else:
             logging.info('create_mask_svgs: nothing to generate for %s'%(src))
 
-def run_inkscape_one(args,src,dest):
+def run_inkscape_png(args,src,dest):
     src_path = os.path.join(os.getcwd(),src)
     dest_path = os.path.join(os.getcwd(),dest)
     cmd = [os.path.join(args.inkscape_path,"inkscape"),
+           "--without-gui",
            "--export-png=%s"%(dest_path),
            "--export-dpi=96",
            src_path]
-    logging.info("run_inkscape_one: running %s"%(' '.join(cmd)))
+    logging.info("run_inkscape_png: running %s"%(' '.join(cmd)))
+    cp = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True)
+    print(cp.stdout)
+
+def run_inkscape_pdf(args,src,dest):
+    src_path = os.path.join(os.getcwd(),src)
+    dest_path = os.path.join(os.getcwd(),dest)
+    cmd = [os.path.join(args.inkscape_path,"inkscape"),
+           "--without-gui",
+           "--export-pdf=%s"%(dest_path),
+           src_path]
+    logging.info("run_inkscape_pdf: running %s"%(' '.join(cmd)))
     cp = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True)
     print(cp.stdout)
 
@@ -94,9 +106,17 @@ def run_inkscape(args):
         src_mtime = getmtime(src)
         dest_mtime = getmtime(dest)
         if src_mtime > dest_mtime:
-            run_inkscape_one(args,src,dest)
+            run_inkscape_png(args,src,dest)
         else:
-            logging.info('run_inkscape: nothing to generate for %s'%(src))
+            logging.info('run_inkscape: not generating png for %s'%(src))
+        # also generate pdf
+        dest = src.replace('.svg','.pdf')
+        src_mtime = getmtime(src)
+        dest_mtime = getmtime(dest)
+        if src_mtime > dest_mtime:
+            run_inkscape_pdf(args,src,dest)
+        else:
+            logging.info('run_inkscape: not generating pdf for %s'%(src))
 
 def generate_rmfxy_files():
     sources = glob.glob('*-unnamed-staff.notes')
@@ -119,8 +139,10 @@ def clean_files():
         dests += [
             src.replace('.ly',MIDI_SUFFIX),
             src.replace('.ly','.png'),
+            src.replace('.ly','.pdf'),
             src.replace('.ly','.svg'),
             src.replace('.ly','_mask.png'),
+            src.replace('.ly','_mask.pdf'),
             src.replace('.ly','_mask.svg'),
             src.replace('.ly','-unnamed-staff.notes'),
             src.replace('.ly','.rmf'),
