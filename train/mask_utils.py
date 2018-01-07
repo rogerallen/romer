@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+from glob import glob
 
 def get_image_names(base_name):
     score_file_name = f'../setup/{base_name}.png'
@@ -44,3 +45,30 @@ def image_from_tiles(width,height,num_input_tiles,pred_tiles,pred_channel):
             pred_one.paste(pred_tile_image, (ix*64,iy*64))
             i += 1
     return pred_one
+
+class image_generator(object):
+    def __init__(self, X, Y, batch_size, channels):
+        self.X  = X
+        self.Y  = Y
+        self.bs = batch_size
+        self.channels = channels
+        self.i  = 0
+    def __next__(self):
+        xs = self.X[self.i:self.i+self.bs]
+        ys = self.Y[self.i:self.i+self.bs]
+        # convert 32,64,64,1 -> 32,4096,1
+        ys = ys.reshape(len(ys),-1,self.channels)
+        self.i = (self.i + self.bs) % self.X.shape[0]
+        return xs, ys
+
+def get_score_mask_images(path):
+    score_image_names = glob(path+'/diced_score*png')
+    mask_image_names = glob(path+'/diced_mask*png')
+    score_image_names.sort()
+    mask_image_names.sort()
+    score_images = np.stack([np.array(Image.open(fn)) for fn in score_image_names])
+    mask_images = np.stack([np.array(Image.open(fn))//255 for fn in mask_image_names])
+    score_images.shape = score_images.shape + (1,)
+    mask_images.shape = mask_images.shape + (1,)
+    assert(score_images.shape == mask_images.shape)
+    return score_images, mask_images
