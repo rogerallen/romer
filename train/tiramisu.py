@@ -6,14 +6,16 @@ Convolutional DenseNets for Semantic Segmentation" by Simon Jégou,
 Michal Drozdzal, David Vazquez, Adriana Romero, Yoshua
 Bengio. https://arxiv.org/abs/1611.09326
 
-Originally based on the code from the 2nd Fast.ai Deep Learning course
-at
+Originally based on the code from the 2nd Fast.ai Deep Learning course at
 https://github.com/fastai/courses/blob/master/deeplearning2/tiramisu-keras.ipynb
 which is Apache licensed. See
 https://github.com/fastai/courses/blob/master/LICENSE.txt
 
 I updated the code to Keras 2 and rewrote it based on my own tastes.
 Since IANAL, let's keep the Apache license for this code, too.
+
+This code resides at 
+https://github.com/rogerallen/romer/blob/master/train/tiramisu.py
 
 Copyright (c) 2017 Roger Allen
 
