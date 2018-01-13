@@ -134,6 +134,7 @@ def generate_rmfxy_files():
 
 def clean_files():
     sources = glob.glob('*.ly')
+    # removing dests, not sources
     dests = glob.glob('gen*.ly')
     for src in sources:
         dests += [

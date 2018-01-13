@@ -19,8 +19,7 @@ Create the rest of the output via the make_files.py script.  It will run all the
 - [x] ~~try windows (this was coded on the mac first)~~
 - [x] ~~try linux~~
 - [x] ~~align x,y between rmfxy & png~~
-- [ ] output greyscale png.  no need for color
-- [ ] first attempt: train & learn with this data
+- [x] first attempt: train & learn with this data
 - [ ] generate music in all key signatures
 - [ ] generate music in all time signatures
 - [ ] generate music in all clefs
@@ -51,6 +50,14 @@ Next, by taking both the lilypond svg file and the notes file, we can create a '
 
 At this point, you have a png image file, an output file that describes the notes to synthesize and a way to tie those notes to locations within the image file.  My hope is that this will allow for real progress.
 
+### Notes file
+
+The standard event-listener.ly file from Inkscape provided a pathway to map notes to the SVG image.  To properly account for note start times, we'll also want to account for rests.  So, we'll use our own event-listener.ly file--event-romer.ly.
+
+The original file is from /usr/share/lilypond/2.18.2/ly on my Linux system.
+
+Rests will be called "notes" in the .rmf files, but the pitch of the note will be -1
+
 ## Example
 
 Here is an example of "Twinkle, Twinkle, Little Star" and what each file contains.
@@ -58,9 +65,9 @@ Here is an example of "Twinkle, Twinkle, Little Star" and what each file contain
 - twinkle.ly: this is the starting point score file describing the song for Lilypond.
 
 When Lilypond runs, it outputs three files:
-- twinkle.svg: a description of the sheet music
+- twinkle.svg: a description of the sheet music.
 - twinkle.midi: a file that can be used directly to synthesize music.
-- twinkle-unnamed-staff.notes: a text file with details about each note in the score.
+- twinkle-unnamed-staff.notes: a text file with details about each note in the score.  This is output due to the `\include "event-listener.ly"` in the score file.
 
 Now gen_mask.py can run and find the staff lines to create a mask file:
 - twinkle_mask.svg

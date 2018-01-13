@@ -113,12 +113,18 @@ as an engraver for convenience."
 %%% main functions
 
 #(define (format-rest engraver event)
-   (print-line engraver
-               "rest"
-               (ly:duration->string
-                (ly:event-property event 'duration))
-               (format-moment (ly:duration-length
-                               (ly:event-property event 'duration)))))
+   (let* ((origin (ly:input-file-line-char-column
+                   (ly:event-property event 'origin))))
+     (print-line engraver
+                 "rest" ""
+                 (ly:duration->string
+                  (ly:event-property event 'duration))
+                 (format-moment (ly:duration-length
+                                 (ly:event-property event 'duration)))
+                 ;; point and click info
+                 (ly:format "point-and-click ~a ~a"
+                            (caddr origin)
+                            (cadr origin)))))
 
 #(define (format-note engraver event)
    (let* ((origin (ly:input-file-line-char-column

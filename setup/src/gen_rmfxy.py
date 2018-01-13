@@ -62,6 +62,9 @@ def parse_line(line):
         if fields[1] == 'note':
             (time,n,note_num,note_len,note_dur,pc) = fields
             return LyNote(time,note_num,note_dur,pc)
+        elif fields[1] == 'rest':
+            (time,n,note_num,note_len,note_dur,pc) = fields
+            return LyNote(time,-1,note_dur,pc)
     return None
 
 def parse_lynotes(notes_file_name):

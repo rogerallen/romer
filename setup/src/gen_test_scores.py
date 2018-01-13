@@ -1,7 +1,7 @@
 #!/bin/env python
 from random import choice, seed, shuffle
 
-ly_template_start = """\\include "event-listener.ly"
+ly_template_start = """\\include "event-romer.ly"
 \\paper {
   #(set-paper-size "letter")
 }
