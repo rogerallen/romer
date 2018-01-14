@@ -60,7 +60,7 @@ def main():
     ts = timestamp()
     ds = daystamp()
     print("run: %s"%(ts))
-    tsdir = './logs/'+ts
+    tsdir = './logs/mask_'+ts
     makedirs(tsdir)
     print("load images")
     train_score_images, train_mask_images = get_score_mask_images('data/train')
