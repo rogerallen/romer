@@ -105,7 +105,7 @@ def step_decay(epoch):
 
 def main():
     batch_size  = 32
-    num_epochs  = 100
+    num_epochs  = 40
     train_rate  = 1e-4
     ts = timestamp()
     ds = daystamp()
@@ -161,8 +161,8 @@ def main():
                              validation_steps=num_valid_images//batch_size,
                              callbacks=[tbcb,lrcb])
     print(f"batch size = {batch_size}")
-    print(f"save weights data/results/note_mask_weights_{ts}.h5")
-    note_model.save_weights(f'data/results/note_mask_weights_{ts}.h5')
+    print(f"save weights data/results/note_weights_{ts}.h5")
+    note_model.save_weights(f'data/results/note_weights_{ts}.h5')
     # ----------------------------------------------------------------------
     # Next, train the lengths
     tsdir = './logs/lengths_'+ts
@@ -205,8 +205,8 @@ def main():
                              validation_steps=num_valid_images//batch_size,
                              callbacks=[tbcb,lrcb])
     print(f"batch size = {batch_size}")
-    print(f"save weights data/results/length_mask_weights_{ts}.h5")
-    length_model.save_weights(f'data/results/length_mask_weights_{ts}.h5')
+    print(f"save weights data/results/length_weights_{ts}.h5")
+    length_model.save_weights(f'data/results/length_weights_{ts}.h5')
 
 if __name__ == "__main__":
     main()
