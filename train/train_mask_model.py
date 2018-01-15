@@ -87,8 +87,8 @@ def main():
                      bottleneck_layers=8,#16
                      growth_rate=8,
                      do_td_maxpool=False)
-    print(f"saving model summary data/results/model_{ds}_summary.txt")
-    with open(f'data/results/model_{ds}_summary.txt','w') as f:
+    print(f"saving model summary data/results/mask_model_{ds}_summary.txt")
+    with open(f'data/results/mask_model_{ds}_summary.txt','w') as f:
         model.summary(print_fn=lambda x: f.write(x + '\n'))
     print("compile model")
     model.compile(loss='sparse_categorical_crossentropy',
@@ -97,9 +97,9 @@ def main():
 
     # optionally save model
     if True:#False:
-        print(f"saving model data/results/model_{ds}.json")
+        print(f"saving model data/results/mask_model_{ds}.json")
         json_string = model.to_json()
-        with open(f"data/results/model_{ds}.json","w") as f:
+        with open(f"data/results/mask_model_{ds}.json","w") as f:
             f.write(json_string)
         #sys.exit(0)
 
