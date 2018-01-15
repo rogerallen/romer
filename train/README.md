@@ -15,17 +15,20 @@ validation & test set of images to train the masking model.
 
 3. test the model with the 'check_mask_model.ipynb' notebook.
 
-4. run 'score_data_prep.ipynb' to setup data/train2 with the selected score staff lines.
+4. run 'score_data_prep.ipynb' to setup data/train2 and data/train3 with the selected score staff lines.
 
-...and that's as far as I am.  Need to parse those staff lines.
+5. run train_score_model.py to create the note & lengths models & model weights.
+
+6. run check_score_model.ipynb and compare data/results/*rmf with setup/*rmf
 
 ## To Do
 
 - [X] come up with a model for masking regions of interest
 - [X] train model for masking regions of interest
-- [ ] come up with a CNN model for scanning staff lines
-- [ ] come up with a RNN model for scanning staff lines
-
+- [X] come up with a CNN model for scanning staff lines
+- [ ] handle chords
+- [ ] handle different key signatures
+- [ ] handle different clefs
 
 ## Architecture
 
