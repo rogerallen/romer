@@ -322,12 +322,12 @@ class Application(object):
         )
         parser.add_argument(
             "-i", required=True,
-            dest="input",
+            dest="input_filename",
             help="Required input image."
         )
         parser.add_argument(
             "-o", required=True,
-            dest="output",
+            dest="output_filename",
             help="Required output file. (rmf format)"
         )
         self.args = parser.parse_args(argv)

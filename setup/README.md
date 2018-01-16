@@ -14,6 +14,14 @@ Add score files to this directory as filename.ly or add generated scores via the
 
 Create the rest of the output via the make_files.py script.  It will run all the programs to create the files.
 
+### Windows note
+
+I needed to specify the full path to lilypond and inkscape on windows like this:
+
+```
+python make_files.py --lilypond_path "\Program Files (x86)\LilyPond\usr\bin" --inkscape_path "\Program Files\Inkscape"
+```
+
 ## To Do
 
 - [x] ~~try windows (this was coded on the mac first)~~

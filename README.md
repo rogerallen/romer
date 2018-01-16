@@ -6,6 +6,14 @@ The goal of Romer is to take an input sheet music image and output a midi file o
 
 This is barely able to run testcases.  Lower your expectations.
 
+0. you will want a python virtual environment setup.  This works for running romer.py.
+```
+conda create --name romer
+activate romer
+conda install scipy numpy matplotlib scikit-learn scikit-image pillow h5py
+pip install tensorflow-gpu
+pip install keras
+```
 1. Create test data in the setup directory.  See the README file.
 2. Train your model in the train directory.  See the README file.
 3. Copy or link your models & weights into the models directory:
