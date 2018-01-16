@@ -4,7 +4,20 @@ The goal of Romer is to take an input sheet music image and output a midi file o
 
 ## Getting Started
 
-Yes, this is just getting started.  If you are interested in helping out, contact the author.
+This is barely able to run testcases.  Lower your expectations.
+
+1. Create test data in the setup directory.  See the README file.
+2. Train your model in the train directory.  See the README file.
+3. Copy or link your models & weights into the models directory:
+   length_model.json  mask_model.json  note_model.json
+   length_weights.h5  mask_weights.h5  note_weights.h5
+4. Run romer.py on an image.  The output rmf file should match the one from the setup directory.  Something like:
+
+   ./romer.py -i setup/twinkle.png -o twinkle.rmf
+
+## Usage
+
+We'll get there eventually.
 
 ## License
 

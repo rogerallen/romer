@@ -20,10 +20,11 @@ Create the rest of the output via the make_files.py script.  It will run all the
 - [x] ~~try linux~~
 - [x] ~~align x,y between rmfxy & png~~
 - [x] first attempt: train & learn with this data
-- [ ] generate music in all key signatures
-- [ ] generate music in all time signatures
 - [ ] generate music in all clefs
-- [ ] generate multi-part scores
+- [ ] generate music in all key signatures
+- [ ] generate music in all time signatures (actually, do I care?)
+- [ ] generate music with multiple notes per beat.
+- [ ] generate multi-part scores (piano staff to start)
 - [ ] generate pngs at different sizes (vary inkscape DPI)
 - [ ] what about repeats?
 - [ ] get free scores
