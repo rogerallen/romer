@@ -1,0 +1,15 @@
+# use conda env create -f conda_environment.yml
+name: romer
+channels:
+  - defaults
+dependencies:
+  - python=3.6
+  - scipy
+  - numpy
+  - matplotlib
+  - scikit-image
+  - pillow
+  - h5py
+  - pip:
+    - tensorflow-gpu
+    - keras

@@ -10,7 +10,7 @@ This is barely able to run testcases.  Lower your expectations.
 ```
 conda create --name romer
 activate romer
-conda install scipy numpy matplotlib scikit-learn scikit-image pillow h5py
+conda install scipy numpy matplotlib scikit-image pillow h5py
 pip install tensorflow-gpu
 pip install keras
 ```
