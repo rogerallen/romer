@@ -4,12 +4,13 @@ channels:
   - defaults
 dependencies:
   - python=3.6
-  - scipy
-  - numpy
-  - matplotlib
-  - scikit-image
-  - pillow
   - h5py
+  - jupyter
+  - matplotlib
+  - numpy
+  - pillow
+  - scikit-image
+  - scipy
   - pip:
     - tensorflow-gpu
     - keras
