@@ -253,9 +253,11 @@ class Application(object):
     def run_mask_model(self,input_filename,temp_dir):
         logging.info("run_mask_model %s, %s",input_filename,temp_dir)
         self.score_image = Image.open(input_filename)
-        background = Image.new('RGBA', self.score_image.size, (255,255,255))
-        self.score_image = Image.alpha_composite(background, self.score_image)
-        self.score_image = self.score_image.convert('L')
+        if self.score_image.mode == 'RGBA':
+            background = Image.new('RGBA', self.score_image.size, (255,255,255))
+            self.score_image = Image.alpha_composite(background, self.score_image)
+        if self.score_image != 'L':
+            self.score_image = self.score_image.convert('L')
         score_tiles = get_input_prediction_tiles(self.score_image)
         mask_tiles = self.mask_model.predict(score_tiles)
         mask_image = image_from_tiles(self.score_image.width,
