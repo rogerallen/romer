@@ -21,34 +21,43 @@ def diff(filename0, filename1):
         with open(filename1,'r') as f1:
             line_num = 1
             for line0 in f0:
-                line1 = next(f1)
-                if line0 != line1:
+                try:
+                    line1 = next(f1)
+                    if line0 != line1:
+                        print(f"FAIL: files {filename0} and {filename1} differ on line {line_num}")
+                        return True
+                except StopIteration:
                     print(f"FAIL: files {filename0} and {filename1} differ on line {line_num}")
                     return True
+                line_num += 1
+
     print(f"PASS: files {filename0} and {filename1} are the same")
     return False
 
 # ======================================================================
-def test_diff(input,output):
-    print(f"----------------------------------------------------------------------\ntesting {input}")
-    romer.main(["--model_dir", "../models", "-i", input, "-o", output])
-    diff("../setup/twinkle.rmf", output)
+def test_diff(infile,outfile,goldfile):
+    print(f"----------------------------------------------------------------------\ntesting {infile}")
+    romer.main(["--model_dir", "../models", "-i", infile, "-o", outfile])
+    diff(goldfile, outfile)
 
-def test_chromatic():
-    input,output = "../setup/chromatic.png", "chromatic.rmf"
-    test_diff(input,output)
-
-def test_twinkle():
-    input,output = "../setup/twinkle.png", "twinkle.rmf"
-    test_diff(input,output)
+def test_setup_dir():
+    setup_files = [("../setup/chromatic.png", "chromatic.rmf","../setup/chromatic.rmf"),
+                   ("../setup/twinkle.png", "twinkle.rmf", "../setup/twinkle.rmf"),
+                   ("../setup/gen_one.png", "gen_one.rmf", "../setup/gen_one.rmf"),
+                   ("../setup/gen_two.png", "gen_two.rmf", "../setup/gen_two.rmf"),
+                   ("../setup/gen_three_1.png", "gen_three_1.rmf", "../setup/gen_three_1.rmf"),
+                   ("../setup/gen_three_2.png", "gen_three_2.rmf", "../setup/gen_three_2.rmf"),
+                   ("../setup/gen_three_3.png", "gen_three_3.rmf", "../setup/gen_three_3.rmf")]
+    for infile,outfile,goldfile in setup_files:
+        test_diff(infile,outfile,goldfile)
 
 def test_frere():
     freres = [("Frère/320px-Frère_Jacques.svg.png", "frere_320px.rmf"),
               ("Frère/640px-Frère_Jacques.svg.png", "frere_640px.rmf"),
               ("Frère/800px-Frère_Jacques.svg.png", "frere_800px.rmf"),
               ("Frère/1024px-Frère_Jacques.svg.png", "frere_1024px.rmf")]
-    for input,output in freres:
-        test_diff(input,output)
+    for infile,outfile in freres:
+        test_diff(infile,outfile,"Frère/Frère.rmf")
 
 # ======================================================================
 class Application(object):
@@ -63,9 +72,8 @@ class Application(object):
         # -v to see info messages
         logging.info("Args: {}".format(self.args))
         # currently passing
-        test_twinkle()
+        test_setup_dir()
         # currently failing
-        test_chromatic()
         test_frere()
         return 0
 
