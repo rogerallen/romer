@@ -16,8 +16,6 @@ import configparser
 sys.path.insert(0, "..")
 import romer
 
-COM="--model_dir ../models ".split()
-
 def diff(filename0, filename1):
     with open(filename0,'r') as f0:
         with open(filename1,'r') as f1:
@@ -31,10 +29,18 @@ def diff(filename0, filename1):
     return False
 
 # ======================================================================
-def test_twinkle():
-    romer.main(COM + ["-i", "../setup/twinkle.png", "-o", "twinkle.rmf"])
-    diff("../setup/twinkle.rmf", "twinkle.rmf")
+def test_diff(input,output):
+    print(f"----------------------------------------------------------------------\ntesting {input}")
+    romer.main(["--model_dir", "../models", "-i", input, "-o", output])
+    diff("../setup/twinkle.rmf", output)
 
+def test_chromatic():
+    input,output = "../setup/chromatic.png", "chromatic.rmf"
+    test_diff(input,output)
+
+def test_twinkle():
+    input,output = "../setup/twinkle.png", "twinkle.rmf"
+    test_diff(input,output)
 
 def test_frere():
     freres = [("Frère/320px-Frère_Jacques.svg.png", "frere_320px.rmf"),
@@ -42,9 +48,7 @@ def test_frere():
               ("Frère/800px-Frère_Jacques.svg.png", "frere_800px.rmf"),
               ("Frère/1024px-Frère_Jacques.svg.png", "frere_1024px.rmf")]
     for input,output in freres:
-        print(f"----------------------------------------------------------------------\ntesting {input}")
-        romer.main(COM + ["-i", input, "-o", output])
-        diff("Frère/Frère.rmf", output)
+        test_diff(input,output)
 
 # ======================================================================
 class Application(object):
@@ -58,7 +62,10 @@ class Application(object):
         """
         # -v to see info messages
         logging.info("Args: {}".format(self.args))
+        # currently passing
         test_twinkle()
+        # currently failing
+        test_chromatic()
         test_frere()
         return 0
 
