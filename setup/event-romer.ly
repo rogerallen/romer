@@ -1,3 +1,9 @@
+%%%% This file is part of Romer
+%%%%
+%%%% Copyright (C) 2018 Roger Allen
+%%%%
+%%%% Original notice below:
+%%%%
 %%%% This file is part of LilyPond, the GNU music typesetter.
 %%%%
 %%%% Copyright (C) 2011--2012 Graham Percival <graham@percival-music.ca>
@@ -112,6 +118,28 @@ as an engraver for convenience."
 
 %%% main functions
 
+#(define (format-key-change engraver event)
+   (let* ((origin    (ly:input-file-line-char-column
+                      (ly:event-property event 'origin)))
+          (tonic     (ly:event-property event 'tonic))
+          (pitches   (ly:event-property event 'pitch-alist))
+          (scale-str (list->string
+                      (fold-right
+                       (lambda (elem ret)
+                         (let* ((pitch-offset (string-ref
+                                               "-0+"
+                                               (inexact->exact
+                                                (* 2 (+ (cdr elem) 0.5)))))
+                                (pitch-name (string-ref "CDEFGAB" (car elem))))
+                           (append (list pitch-name pitch-offset) ret)))
+                       '()
+                       pitches))))
+     (print-line engraver
+                 "key-change" scale-str ""
+                 (ly:format "point-and-click ~a ~a"
+                            (caddr origin)
+                            (cadr origin)))))
+
 #(define (format-rest engraver event)
    (let* ((origin (ly:input-file-line-char-column
                    (ly:event-property event 'origin))))
@@ -207,7 +235,6 @@ as an engraver for convenience."
                  (ly:event-property event 'span-direction)
                  left-text)))
 
-
 %%%% The actual engraver definition: We just install some listeners so we
 %%%% are notified about all notes and rests. We don't create any grobs or
 %%%% change any settings.
@@ -217,6 +244,7 @@ as an engraver for convenience."
   \Voice
   \consists #(make-engraver
               (listeners
+               (key-change-event . format-key-change)
 	       (tempo-change-event . format-tempo)
 	       (rest-event . format-rest)
 	       (note-event . format-note)
