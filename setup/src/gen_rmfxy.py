@@ -18,6 +18,18 @@ class LyNote(object):
         x,y = points[self.ly_row,self.ly_col]
         return "note,%d,%f,%f,%f,%f"%(self.num,self.time,self.dur,x,y)
 
+class LyKeyChange(object):
+    def __init__(self,time,desc,pc):
+        self.time = float(time)*4
+        self.desc = desc
+        s,c,r = pc.strip().split()
+        self.ly_row, self.ly_col = int(r), int(c)
+    def __str__(self):
+        return "key-change,%s,%f"%(self.desc,self.time)
+    def with_point(self,points):
+        x,y = points[self.ly_row,self.ly_col]
+        return "key-change,%s,%f,%f,%f"%(self.desc,self.time,x,y)
+
 def xy_from_transform(ts):
     '''convert the text "translate(14.2264, 10.8953) scale..." to 14.2264, 10.8953
     and return it.'''
@@ -61,11 +73,14 @@ def parse_line(line):
     fields = line.split('\t')
     if len(fields) > 2:
         if fields[1] == 'note':
-            (time,n,note_num,note_len,note_dur,pc) = fields
+            (time,_,note_num,note_len,note_dur,pc) = fields
             return LyNote(time,note_num,note_dur,pc)
         elif fields[1] == 'rest':
-            (time,n,note_num,note_len,note_dur,pc) = fields
+            (time,_,note_num,note_len,note_dur,pc) = fields
             return LyNote(time,-1,note_dur,pc)
+        elif fields[1] == 'key-change':
+            (time,_,desc,_,pc) = fields
+            return LyKeyChange(time,desc,pc)
     return None
 
 def parse_lynotes(notes_file_name):

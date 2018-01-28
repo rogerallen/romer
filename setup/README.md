@@ -29,7 +29,9 @@ python make_files.py --lilypond_path "\Program Files (x86)\LilyPond\usr\bin" --i
 - [x] ~~align x,y between rmfxy & png~~
 - [x] first attempt: train & learn with this data
 - [ ] generate music in all clefs
-- [ ] ... in all key signatures
+- [ ] ... with clef changes inline
+- [x] ... in all key signatures
+- [ ] ... with key changes inline
 - [ ] ... with note articulations, ornamentations
 - [ ] ... with dynamics, curves, lines
 - [ ] ... with repeats
