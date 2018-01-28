@@ -52,8 +52,9 @@ def parse_lypoints(svg_file_name):
         if fields[0] == 'textedit':
             row,col = int(fields[-3]),int(fields[-2])
             p = a.find('{http://www.w3.org/2000/svg}path')
-            x,y = xy_from_transform(p.attrib['transform'])
-            points[(row,col)] = (xy_scale*x,xy_scale*y)
+            if p != None:
+                x,y = xy_from_transform(p.attrib['transform'])
+                points[(row,col)] = (xy_scale*x,xy_scale*y)
     return points
 
 def parse_line(line):
