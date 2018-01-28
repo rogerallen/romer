@@ -26,9 +26,10 @@ validation & test set of images to train the masking model.
 - [X] come up with a model for masking regions of interest
 - [X] train model for masking regions of interest
 - [X] come up with a CNN model for scanning staff lines
-- [ ] handle chords
+- [ ] code cleanup: rename note->pitch and score->staff as appropriate
 - [ ] handle different key signatures
 - [ ] handle different clefs
+- [ ] handle chords
 
 ## Architecture
 

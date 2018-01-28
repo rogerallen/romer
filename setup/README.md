@@ -29,9 +29,13 @@ python make_files.py --lilypond_path "\Program Files (x86)\LilyPond\usr\bin" --i
 - [x] ~~align x,y between rmfxy & png~~
 - [x] first attempt: train & learn with this data
 - [ ] generate music in all clefs
-- [ ] generate music in all key signatures
-- [ ] generate music in all time signatures (actually, do I care?)
-- [ ] generate music with multiple notes per beat.
+- [ ] ... in all key signatures
+- [ ] ... with note articulations, ornamentations
+- [ ] ... with dynamics, curves, lines
+- [ ] ... with repeats
+- [ ] ... with multiple notes per beat. (chords)
+- [ ] ... with multiple voices
+- [ ] ... in all time signatures (actually, do I care?)
 - [ ] generate multi-part scores (piano staff to start)
 - [ ] generate pngs at different sizes (vary inkscape DPI)
 - [ ] what about repeats?
