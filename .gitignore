@@ -10,3 +10,4 @@ setup/*.svg
 setup/*.notes
 __pycache__
 .ipynb_checkpoints/
+test/*.rmf
