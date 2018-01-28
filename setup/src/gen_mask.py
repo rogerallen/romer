@@ -92,7 +92,7 @@ def print_mask_svg(bbs,output_file_name,attrib):
     for bb in bbs:
         bb.add_svg_rect(svg)
     with open(output_file_name,'w') as of:
-        print("generating",output_file_name)
+        print("gen_mask.py: generating",output_file_name)
         print(prettify_svg(svg),file=of)
 
 def gen_mask(root,output_file_name):

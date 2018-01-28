@@ -81,11 +81,11 @@ def parse_lynotes(notes_file_name):
 def main(notes_file_name,svg_file_name,output_file_base):
     notes = parse_lynotes(notes_file_name)
     points = parse_lypoints(svg_file_name)
-    print("generating %s"%(output_file_base+'.rmf'))
+    print("gen_rmfxy.py: generating %s"%(output_file_base+'.rmf'))
     with open(output_file_base+'.rmf','w') as of:
         for n in notes:
             print(n,file=of)
-    print("generating %s"%(output_file_base+'.rmfxy'))
+    print("gen_rmfxy.py: generating %s"%(output_file_base+'.rmfxy'))
     with open(output_file_base+'.rmfxy','w') as of:
         for n in notes:
             print(n.with_point(points),file=of)
