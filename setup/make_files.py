@@ -26,6 +26,11 @@ def getmtime(path):
     except FileNotFoundError:
         return 0.0
 
+def get_ly_source_files():
+    sources = glob.glob('*.ly')
+    sources.remove('event-romer.ly')
+    return sources
+
 # ======================================================================
 def generate_test_lilypond_files():
     exe_mtime = getmtime('src/gen_test_scores.py')
@@ -51,7 +56,7 @@ def run_lilypond_one(args,src):
     print(cp.stdout)
 
 def run_lilypond(args):
-    sources = glob.glob('*.ly')
+    sources = get_ly_source_files()
     for src in sources:
         src_mtime = getmtime(src)
         dests = [src.replace('.ly','.svg'),
@@ -64,12 +69,12 @@ def run_lilypond(args):
             logging.info('run_lilypond: nothing to generate for %s'%(src))
 
 def create_mask_svgs():
-    sources = glob.glob('*.ly')
+    sources = get_ly_source_files()
     exe_mtime = getmtime('src/gen_mask.py')
     for src in sources:
         src = src.replace('.ly','.svg')
         dest = src.replace('.svg','_mask.svg')
-        src_mtime = min(exe_mtime,getmtime(src))
+        src_mtime = max(exe_mtime,getmtime(src))
         dest_mtime = getmtime(dest)
         if src_mtime > dest_mtime:
             gm.main(src,dest)
