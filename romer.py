@@ -20,6 +20,8 @@ import json
 
 from keras.models import model_from_json
 
+NUM_KEY_BITS=4
+
 # ======================================================================
 def get_input_prediction_tiles(input_image):
     """Dice up the image to predict.  We have to send 64x64 tiles"""
@@ -213,9 +215,9 @@ class Application(object):
         # next make those masks into rectangles to snip
         staff_info = self.get_staff_info(mask_image, self.args.temp_dir)
         # now we use models that decode each staff to find notes
-        self.init_staff_models(self.args.model_dir)
+        self.init_scan_model(self.args.model_dir)
         # now we scan the staff images and output music_info
-        music_info = self.scan_staff_info(staff_info)
+        music_info = self.scan_staff_info(staff_info, int(self.args.key))
         # finally we output the music_info
         self.output_music(music_info, self.args.output_filename)
         return 0
@@ -229,26 +231,13 @@ class Application(object):
         self.mask_model = model_from_json(json_string)
         self.mask_model.load_weights(weights_file)
 
-    def init_staff_models(self,model_dir):
-        logging.info("init_staff_models %s",model_dir)
-        self.init_staff_note_model(model_dir)
-        self.init_staff_length_model(model_dir)
-
-    def init_staff_note_model(self,model_dir):
-        model_file   = os.path.join(model_dir,'note_model.json')
-        weights_file = os.path.join(model_dir,'note_weights.h5')
+    def init_scan_model(self,model_dir):
+        model_file   = os.path.join(model_dir,'scan_model.json')
+        weights_file = os.path.join(model_dir,'scan_weights.h5')
         with open(model_file,"r") as f:
             json_string = f.read()
-        self.staff_note_model = model_from_json(json_string)
-        self.staff_note_model.load_weights(weights_file)
-
-    def init_staff_length_model(self,model_dir):
-        model_file   = os.path.join(model_dir,'length_model.json')
-        weights_file = os.path.join(model_dir,'length_weights.h5')
-        with open(model_file,"r") as f:
-            json_string = f.read()
-        self.staff_length_model = model_from_json(json_string)
-        self.staff_length_model.load_weights(weights_file)
+        self.scan_model = model_from_json(json_string)
+        self.scan_model.load_weights(weights_file)
 
     def run_mask_model(self,input_filename,temp_dir):
         logging.info("run_mask_model %s, %s",input_filename,temp_dir)
@@ -280,17 +269,19 @@ class Application(object):
             json.dump(staff_info, outfile)
         return staff_info
 
-    def scan_staff_info(self, staff_info):
+    def scan_staff_info(self, staff_info, key):
         """Return music_info from decoding the staff images"""
         music_info = []
         for cur_staff_info in staff_info:
             cur_crop_staff_inputs = get_crop_inputs(cur_staff_info)
-            note_preds   = self.staff_note_model.predict(cur_crop_staff_inputs)
-            length_preds = self.staff_length_model.predict(cur_crop_staff_inputs)
+            key_inputs = np.zeros((cur_crop_staff_inputs.shape[0],NUM_KEY_BITS))
+            key_vec = np.array(list(np.binary_repr(key,width=NUM_KEY_BITS)),dtype=np.float32)
+            key_inputs = key_inputs + key_vec
+            note_preds, length_preds = self.scan_model.predict([cur_crop_staff_inputs,
+                                                                key_inputs])
             raw = get_notes_lengths(note_preds, length_preds)
             refined = refine_notes_lengths(raw)
             music_info.extend(refined)
-
         return music_info
 
     def output_music(self, music_info, output_filename):
@@ -331,6 +322,12 @@ class Application(object):
             "-o", required=True,
             dest="output_filename",
             help="Required output file. (rmf format)"
+        )
+        parser.add_argument(
+            "-k", "--key",
+            dest="key",
+            default="7",
+            help="[temp until we can figure this out] key value: 0-14 (default=7=C)"
         )
         self.args = parser.parse_args(argv)
 

@@ -13,7 +13,7 @@ validation & test set of images to train the masking model.
 
 2. run train_mask_model.py to create the model & model weights.
 
-3. test the model with the 'check_mask_model.ipynb' notebook.
+3. test the model & create masks with the 'check_mask_model.ipynb' notebook.
 
 4. run 'score_data_prep.ipynb' to setup data/train2 and data/train3 with the selected score staff lines.
 
@@ -26,8 +26,8 @@ validation & test set of images to train the masking model.
 - [X] come up with a model for masking regions of interest
 - [X] train model for masking regions of interest
 - [X] come up with a CNN model for scanning staff lines
+- [X] handle different key signatures
 - [ ] code cleanup: rename note->pitch and score->staff as appropriate
-- [ ] handle different key signatures
 - [ ] handle different clefs
 - [ ] handle chords
 

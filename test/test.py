@@ -21,6 +21,8 @@ def diff(filename0, filename1):
         with open(filename1,'r') as f1:
             line_num = 1
             for line0 in f0:
+                if line0.startswith("key"):
+                    continue
                 try:
                     line1 = next(f1)
                     if line0 != line1:
@@ -35,9 +37,9 @@ def diff(filename0, filename1):
     return False
 
 # ======================================================================
-def test_diff(infile,outfile,goldfile):
+def test_diff(infile,outfile,goldfile,key=7):
     print(f"----------------------------------------------------------------------\ntesting {infile}")
-    romer.main(["--model_dir", "../models", "-i", infile, "-o", outfile])
+    romer.main(["--model_dir", "../models", "-i", infile, "-o", outfile, "-k", str(key)])
     diff(goldfile, outfile)
 
 def test_setup_dir():
@@ -50,6 +52,13 @@ def test_setup_dir():
                    ("../setup/gen_three_3.png", "gen_three_3.rmf", "../setup/gen_three_3.rmf")]
     for infile,outfile,goldfile in setup_files:
         test_diff(infile,outfile,goldfile)
+
+def test_setup_keys():
+    test_diff("../setup/frere.png", "frere.rmf", "../setup/frere.rmf", 6)
+    for i,k in enumerate("g d a e b fis cis".split()):
+        test_diff(f"../setup/gen_key_{k}.png", f"gen_key_{k}.rmf", f"../setup/gen_key_{k}.rmf", i+1+7)
+    for i,k in enumerate("f bes ees aes des ges ces".split()):
+        test_diff(f"../setup/gen_key_{k}.png", f"gen_key_{k}.rmf", f"../setup/gen_key_{k}.rmf", 7-1-i)
 
 def test_frere():
     freres = [("Frère/320px-Frère_Jacques.svg.png", "frere_320px.rmf"),
@@ -71,9 +80,8 @@ class Application(object):
         """
         # -v to see info messages
         logging.info("Args: {}".format(self.args))
-        # currently passing
+        test_setup_keys()
         test_setup_dir()
-        # currently failing
         test_frere()
         return 0
 
