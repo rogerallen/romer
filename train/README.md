@@ -27,6 +27,13 @@ validation & test set of images to train the masking model.
 - [X] train model for masking regions of interest
 - [X] come up with a CNN model for scanning staff lines
 - [X] handle different key signatures
+- [X] try FindLR & CosineLR from fast.ai course
+-     [x] try larger batch sizes & then find LR
+-     [x] mask model
+-     [x] scan model
+- [ ] try maxpool in mask model?
+- [ ] try dropout in resnet?
+- [ ] try model that finds just notes? (YOLO-like)
 - [ ] code cleanup: rename note->pitch and score->staff as appropriate
 - [ ] handle different clefs
 - [ ] handle chords

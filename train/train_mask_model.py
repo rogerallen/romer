@@ -5,7 +5,7 @@ from PIL import Image
 from keras.models import Model
 from keras.layers import Input
 from keras.optimizers import RMSprop
-from keras.callbacks import TensorBoard, EarlyStopping, ReduceLROnPlateau, LearningRateScheduler
+from keras.callbacks import TensorBoard
 from datetime import datetime
 from os import makedirs
 import numpy as np
@@ -13,6 +13,7 @@ import math
 import sys
 
 from tiramisu import Tiramisu
+from train_utils import CyclicalCosineWithRestartsLR
 
 def daystamp():
     return datetime.now().strftime('%y%m%d')
@@ -47,16 +48,12 @@ def get_score_mask_images(path):
     assert(score_images.shape == mask_images.shape)
     return score_images, mask_images
 
-def step_decay(epoch):
-    initial_lrate = 1e-3
-    drop = 0.75
-    epochs_drop = 10.0
-    lrate = (initial_lrate *
-             math.pow(drop, math.floor((1+epoch)/epochs_drop)))
-    print("step_decay: epoch=%d lrate=%f"%(epoch, lrate))
-    return lrate
-
 def main():
+    batch_size              = 128 # up from 32, earlier
+    num_epochs              = 100
+    num_epochs_per_lr_cycle = 10
+    train_rate              = 1e-3 # found via FindLR
+    num_labels              = 2
     ts = timestamp()
     ds = daystamp()
     print("run: %s"%(ts))
@@ -68,10 +65,6 @@ def main():
     num_train_images,rows,cols,channels = train_score_images.shape
     num_valid_images,_,_,_ = valid_score_images.shape
     input_shape = (rows,cols,channels)
-    batch_size  = 32 # got less accurate with 64, 128
-    num_epochs  = 100
-    train_rate  = 1e-3
-    num_labels  = 2
     train_generator = image_generator(train_score_images, train_mask_images,
                                       batch_size, channels)
     valid_generator = image_generator(valid_score_images, valid_mask_images,
@@ -103,25 +96,18 @@ def main():
             f.write(json_string)
         #sys.exit(0)
 
+    # optionally load weights
+    if False:
+        print(f"loading model data/results/mask_weights_xxx.h5")
+        scan_model.load_weights(f'data/results/mask_weights_xxx.h5')
+
     print("fit model")
     tbcb = TensorBoard(log_dir=tsdir,
                        histogram_freq=0,
                        write_graph=True,
                        write_images=True)
-    #escb = EarlyStopping(monitor='val_acc',
-    #                     min_delta=0.00001,
-    #                     patience=3,
-    #                     verbose=1,
-    #                     mode='max')
-    #lrcb = ReduceLROnPlateau(monitor='val_loss',
-    #                         factor=0.2,
-    #                         patience=2,
-    #                         verbose=1,
-    #                         mode='auto',
-    #                         epsilon=0.0001,
-    #                         cooldown=2,
-    #                         min_lr=0)
-    lrcb = LearningRateScheduler(step_decay)
+    lrcb = CyclicalCosineWithRestartsLR((num_train_images//batch_size)*num_epochs_per_lr_cycle,
+                                        0.0, train_rate)
     model.fit_generator(train_generator,
                         num_train_images//batch_size, num_epochs,
                         verbose=2,

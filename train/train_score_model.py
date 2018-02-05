@@ -11,11 +11,12 @@ import numpy as np
 import sys
 
 import keras
-from keras.callbacks import TensorBoard, LearningRateScheduler
+from keras.callbacks import TensorBoard
 from keras.optimizers import RMSprop
 from keras.utils import np_utils
 
 import resnet
+from train_utils import CyclicalCosineWithRestartsLR
 
 # 0=no_note, 1=rest, 2-129=midi_pitch_value
 NUM_PITCH_CATEGORIES=128+1+1
@@ -31,8 +32,8 @@ def timestamp():
     return datetime.now().strftime('%y%m%d_%H%M%S')
 
 class dual_generator(object):
-    """X1 should be list of score images, X2 should be a list of keys, 
-    Y1 should be a list of pitch results, Y2 should be a list of length results.  
+    """X1 should be list of score images, X2 should be a list of keys,
+    Y1 should be a list of pitch results, Y2 should be a list of length results.
     All should be the same length."""
     def __init__(self, X1, X2, Y1, Y2, batch_size, channels):
         self.X1 = X1
@@ -49,7 +50,7 @@ class dual_generator(object):
         ys2 = self.Y2[self.i:self.i+self.bs]
         self.i = (self.i + self.bs) % self.X1.shape[0]
         return [xs1, xs2], [ys1, ys2]
-    
+
 def get_score_indices(input_image_names):
     """Given a list of filenames with the format foo_bar_baz_NNNNN.png
     return a list of Ns"""
@@ -108,19 +109,11 @@ def get_key_inputs(indices, score_info):
         keys[i] = np.array(list(np.binary_repr(key,width=NUM_KEY_BITS)),dtype=np.float32)
     return keys
 
-def step_decay(epoch):
-    initial_lrate = 1e-4
-    drop = 0.5
-    epochs_drop = 10.0
-    lrate = (initial_lrate *
-             math.pow(drop, math.floor((1+epoch)/epochs_drop)))
-    print("step_decay: epoch=%d lrate=%f"%(epoch, lrate))
-    return lrate
-
 def main():
-    batch_size  = 32
-    num_epochs  = 40
-    train_rate  = 1e-4
+    batch_size              = 2048
+    num_epochs              = 100
+    num_epochs_per_lr_cycle = 10
+    train_rate              = 2e-3
     ts = timestamp()
     ds = daystamp()
     print("run: %s"%(ts))
@@ -143,7 +136,7 @@ def main():
     valid_pitch_results  = get_pitch_results(valid_score_indices,score_info)
     valid_length_results = get_length_results(valid_score_indices,score_info)
     valid_key_inputs     = get_key_inputs(valid_score_indices,score_info)
-    
+
     train_generator = dual_generator(train_score_images, train_key_inputs,
                                       train_pitch_results, train_length_results,
                                       batch_size, channels)
@@ -163,19 +156,25 @@ def main():
                   metrics=["accuracy"])
 
     # optionally save model
-    if True:#False:
+    if True:
         print(f"saving model data/results/scan_model_{ds}.json")
         json_string = scan_model.to_json()
         with open(f"data/results/scan_model_{ds}.json","w") as f:
             f.write(json_string)
         #sys.exit(0)
 
+    # optionally load weights
+    if True:
+        print(f"loading model data/results/scan_weights_180204_145636.h5")
+        scan_model.load_weights(f'data/results/scan_weights_180204_145636.h5')
+
     print("fit scan model")
     tbcb = TensorBoard(log_dir=tsdir,
                        histogram_freq=0,
                        write_graph=True,
                        write_images=True)
-    lrcb = LearningRateScheduler(step_decay)
+    lrcb = CyclicalCosineWithRestartsLR((num_train_images//batch_size)*num_epochs_per_lr_cycle,
+                                        0.0, train_rate)
     scan_model.fit_generator(train_generator,
                              num_train_images//batch_size, num_epochs,
                              verbose=2,
