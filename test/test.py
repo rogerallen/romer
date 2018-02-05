@@ -64,7 +64,8 @@ def test_frere():
     freres = [("Frère/320px-Frère_Jacques.svg.png", "frere_320px.rmf"),
               ("Frère/640px-Frère_Jacques.svg.png", "frere_640px.rmf"),
               ("Frère/800px-Frère_Jacques.svg.png", "frere_800px.rmf"),
-              ("Frère/1024px-Frère_Jacques.svg.png", "frere_1024px.rmf")]
+              #("Frère/1024px-Frère_Jacques.svg.png", "frere_1024px.rmf")
+    ]
     for infile,outfile in freres:
         test_diff(infile,outfile,"Frère/Frère.rmf")
 
