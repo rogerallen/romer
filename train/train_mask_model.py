@@ -79,7 +79,7 @@ def main():
                      initial_filter=24,#48
                      bottleneck_layers=8,#16
                      growth_rate=8,
-                     do_td_maxpool=False)
+                     do_td_maxpool=True) # was False
     print(f"saving model summary data/results/mask_model_{ds}_summary.txt")
     with open(f'data/results/mask_model_{ds}_summary.txt','w') as f:
         model.summary(print_fn=lambda x: f.write(x + '\n'))
