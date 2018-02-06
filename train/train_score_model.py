@@ -113,7 +113,7 @@ def main():
     batch_size              = 2048
     num_epochs              = 100
     num_epochs_per_lr_cycle = 10
-    train_rate              = 2e-3
+    train_rate              = 1e-3 # reduce from 2e-3 for refinement
     ts = timestamp()
     ds = daystamp()
     print("run: %s"%(ts))
@@ -156,7 +156,7 @@ def main():
                   metrics=["accuracy"])
 
     # optionally save model
-    if True:
+    if False:
         print(f"saving model data/results/scan_model_{ds}.json")
         json_string = scan_model.to_json()
         with open(f"data/results/scan_model_{ds}.json","w") as f:
@@ -165,8 +165,8 @@ def main():
 
     # optionally load weights
     if True:
-        print(f"loading model data/results/scan_weights_180204_145636.h5")
-        scan_model.load_weights(f'data/results/scan_weights_180204_145636.h5')
+        print(f"loading model data/results/scan_weights_180205_004756.h5")
+        scan_model.load_weights(f'data/results/scan_weights_180205_004756.h5')
 
     print("fit scan model")
     tbcb = TensorBoard(log_dir=tsdir,
